@@ -1,9 +1,25 @@
 #pragma once
 
+/*
+Задание:
+	   Реализовать класс синхронизации семафор, действующий аналогично объекту
+		   Semaphore Windows API(https ://msdn.microsoft.com/en-us/library/windows/desktop/ms685129%28v=vs.85%29.aspx).
+			   Класс инкапсулирует работу объекта синхронизации, который содержит счетчик между нулем и
+			   заданным максимальным значением.Значение счетчика увеличивается каждый раз, когда поток завершает ожидание
+			   освобождения семафора, и уменьшается, когда поток освобождает семафор.
+			   В случае, если значение счетчика достигает максимального значения, потоки ожидают освобождение семафора.
+			   Если указано максимальное значение счетчика, равное 1, то семафор функционально должен вести
+			   себя как критическая секция(critical section).
+
+Многопоточность:
+Свойство платформы или приложения, состоящее в том, что процесс, порождённый в операционной системе,
+может состоять из нескольких потоков, выполняющихся «параллельно», то есть без предписанного порядка во времени.
+При выполнении некоторых задач такое разделение может достичь более эффективного использования ресурсов вычислительной машины.
+*/
 #ifndef H_SEMOPHORE
 #define H_SEMOPHORE
 
-#include <windows.h>
+#include <windows.h>  ///Библиотека для работы с потоками
 #include <iostream>
 
 using namespace std;
@@ -13,8 +29,8 @@ class CS {
 
 public:
 	CS() { InitializeCriticalSection(&CS_); }
-	void Enter() { EnterCriticalSection(&CS_); }
-	void Leave() { LeaveCriticalSection(&CS_); }
+	void Enter() { EnterCriticalSection(&CS_); }  ///запроc на монопольное использование критической секции перед выполнением какой-либо части кода, который получает доступ к защищенному ресурсу.
+	void Leave() { LeaveCriticalSection(&CS_); } ///освобождаем монопольное использование, давая возможность другому потоку стать монопольным пользователем и получить доступ к защищенному ресурсу.
 };
 
 class Event {
@@ -23,30 +39,30 @@ public:
 	Event() { hEvent = CreateEvent(NULL, FALSE, FALSE, LPCWSTR("Event")); }
 	~Event() { CloseHandle(hEvent); }
 
-	void Set() { SetEvent(hEvent); }
-	void Reset() { ResetEvent(hEvent); }
+	void Set() { SetEvent(hEvent); } ///меняет состояние на сигнальное
+	void Reset() { ResetEvent(hEvent); } ///меняет состояние на невыделенное
 
-	DWORD Wait(int ms) { return WaitForSingleObject(hEvent, ms); }
-	DWORD Wait() { return Wait(INFINITE); }
+	DWORD Wait(int ms) { return WaitForSingleObject(hEvent, ms); } /// Задерживаем процесс, ожидая сигнала от объекта (мс)
+	DWORD Wait() { return Wait(INFINITE); } /// Задерживаем процесс, ожидая сигнала от объекта (бесконечно)
 };
 
 class Semaphore {
-	int maxCount;
-	int Count;
-	int count_dbg;
+	int maxCount; /// Количество потоков, которые могут одновременно иметь доступ к данным
+	int Count; /// Количество потоков, которые хотят получить доступ к данным
+	int count_dbg; /// Количество потоков, которые в данный момент получают доступ к данным
 
-	CS countCS;
-	Event ev;
+	CS countCS; /// Критическая секция для ограничения доступа к преерменным класса
+	Event ev; /// Событие освобождения места каким либо потоком
 
 
 public:
 	Semaphore(int count) : maxCount(count), Count(0), count_dbg(0) { /*f = fopen( "out.txt", "wt" );*/ }
 	~Semaphore() { /*fclose( f );*/ }
 
-	void Enter();
-	void Leave();
+	void Enter(); /// Вход в семофор и его блокировка
+	void Leave(); /// Выход из семофора и его разблокировка
 
-	int ret_Count_dbg() { return count_dbg; }
+	int ret_Count_dbg() { return count_dbg; } /// Возвращает количество потоков, которые в данный момент получают доступ к данным
 };
 
 class Test
