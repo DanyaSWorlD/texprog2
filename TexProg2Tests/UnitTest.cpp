@@ -51,7 +51,7 @@ namespace TexProg2Tests
 		//void MyTestCleanup() {};
 		//
 		#pragma endregion 
-
+		//Тело теста 
 		void TestBody(int threads, int semaphore, int wt)
 		{
 			Test test;
@@ -74,31 +74,31 @@ namespace TexProg2Tests
 
 			delete h;
 		}
-
+		///Тест 10 потоков. Пропускная способность семафора - 2. Время ожидания 1000
 		[TestMethod]
 		void Th10S2T1000()
 		{
 			TestBody(10, 2, 1000);
 		};
-
+		///Тест 100 потоков. Пропускная способность семафора - 2. Время ожидания 10000
 		[TestMethod]
 		void Th100S2T10000()
 		{
 			TestBody(100, 2, 10000);
 		};
-
+		///Тест 5 потоков. Пропускная способность семафора - 1. Время ожидания 1000
 		[TestMethod]
 		void Th5S1T1000()
 		{
 			TestBody(5, 1, 1000);
 		};
-
+		///Тест 1000 потоков. Пропускная способность семафора - 2. Время ожидания 1000000
 		[TestMethod]
 		void Th1000S2T1000000()
 		{
 			TestBody(1000, 2, 1000000);
 		};
-
+		///Тест 100 потоков. Пропускная способность семафора - 10. Время ожидания 1000000
 		[TestMethod]
 		void Th100S10T1000000()
 		{
