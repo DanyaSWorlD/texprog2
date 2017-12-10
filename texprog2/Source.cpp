@@ -6,7 +6,7 @@
 using namespace std;
 
 
-DWORD WINAPI testFunc(LPVOID param); /// Тестовая функция
+DWORD WINAPI testFunc(LPVOID param); /// РўРµСЃС‚РѕРІР°СЏ С„СѓРЅРєС†РёСЏ
 
 Semaphore sem(4);
 
@@ -18,35 +18,35 @@ int main(int argc, char *argv[])
 
 	for (int i = 0; i < 8; i++)
 	{
-		HANDLE h = CreateThread(NULL, 0, testFunc, LPVOID(new int(i)), 0, &id); /// Запуск потока
+		HANDLE h = CreateThread(NULL, 0, testFunc, LPVOID(new int(i)), 0, &id); /// Р—Р°РїСѓСЃРє РїРѕС‚РѕРєР°
 	}
 
 	ct = true;
 
 	while (1)
-		if (sem.ret_Count_dbg() > 10) /// Если количество потоков больше 10
+		if (sem.ret_Count_dbg() > 10) /// Р•СЃР»Рё РєРѕР»РёС‡РµСЃС‚РІРѕ РїРѕС‚РѕРєРѕРІ Р±РѕР»СЊС€Рµ 10
 		{
 			cout << "Error"; return 0;
 		}
 }
 
-DWORD WINAPI testFunc(LPVOID a) /// Тестовая функция
+DWORD WINAPI testFunc(LPVOID a) /// РўРµСЃС‚РѕРІР°СЏ С„СѓРЅРєС†РёСЏ
 {
 	while (!ct);
 
 	int number = *(int *)(a);
 	while (1)
 	{
-		sem.Enter(); ///Входим в семафор
+		sem.Enter(); ///Р’С…РѕРґРёРј РІ СЃРµРјР°С„РѕСЂ
 		printf("%i Start\n", number);
 
-		auto mas = new int[(number+1)*20]; ///Объявляем массив. номер потока *20. 0 поток сортирует 20, 1 сортирует 40
-		for (int i = 0; i<(number + 1) * 20; i++)  /// Забиваем рандомными значениями
+		auto mas = new int[(number+1)*20]; ///РћР±СЉСЏРІР»СЏРµРј РјР°СЃСЃРёРІ. РЅРѕРјРµСЂ РїРѕС‚РѕРєР° *20. 0 РїРѕС‚РѕРє СЃРѕСЂС‚РёСЂСѓРµС‚ 20, 1 СЃРѕСЂС‚РёСЂСѓРµС‚ 40
+		for (int i = 0; i<(number + 1) * 20; i++)  /// Р—Р°Р±РёРІР°РµРј СЂР°РЅРґРѕРјРЅС‹РјРё Р·РЅР°С‡РµРЅРёСЏРјРё
 		{
 			mas[i] = rand() % 10;
 		}
 		bool changes = true;
-		while (changes)  /// Сортировка пузырьком. Полезная нагрузка
+		while (changes)  /// РЎРѕСЂС‚РёСЂРѕРІРєР° РїСѓР·С‹СЂСЊРєРѕРј. РџРѕР»РµР·РЅР°СЏ РЅР°РіСЂСѓР·РєР°
 		{
 			changes = false;
 			for (int i = 0; i < (number + 1) * 20-1; i++)
@@ -66,6 +66,6 @@ DWORD WINAPI testFunc(LPVOID a) /// Тестовая функция
 		Sleep(1);
 
 		printf("\n%i End.\n", number);
-		sem.Leave();  /// Покидаем семафор
+		sem.Leave();  /// РџРѕРєРёРґР°РµРј СЃРµРјР°С„РѕСЂ
 	}
 }

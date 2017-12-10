@@ -1,4 +1,4 @@
-﻿#include "stdafx.h"
+#include "stdafx.h"
 #include "../texprog2/Semaphore.h"
 
 using namespace System;
