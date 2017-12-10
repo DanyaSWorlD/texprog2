@@ -46,3 +46,7 @@
 # VS files
 *.filters
 *.user
+
+# Other garbage
+/ipch
+/TestProject1
